@@ -366,7 +366,11 @@ gigshield/
 
 ## 11. Team
 
-> *(Add your team member names, roles, and college here)*
+> *Megha Prashant
+> Aditi S
+> Aleena Sebastian
+> Gouri K
+> Judith Ann Benny*
 
 ---
 
