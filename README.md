@@ -368,7 +368,7 @@ A coordinated fraud ring using GPS spoofing has exposed a critical flaw in param
 
 GigShield is designed with a multi-layer adversarial defense architecture that goes beyond GPS to verify real-world work conditions, not just coordinates.
 
-###11.1 The Differentiation — Real Worker vs Spoofer
+### 11.1 The Differentiation — Real Worker vs Spoofer
 
 GigShield does not trust GPS alone.
 
@@ -416,7 +416,7 @@ Rooted/emulator detection
 A real worker shows coherent patterns across all 3 layers.
 A spoofer can fake GPS — but cannot fake ecosystem consistency.
 
-###11.2 The Data — Beyond GPS Coordinates
+### 11.2 The Data — Beyond GPS Coordinates
 
 GigShield uses a multi-signal fraud graph instead of single-point validation.
 
@@ -430,7 +430,7 @@ Network Data	IP vs GPS mismatch	Flags spoofing apps/VPN
 Historical Behavior	Past patterns vs current anomaly	Detect sudden unnatural changes
 Cluster Detection	Multiple users with identical patterns	Identifies fraud rings
 
-###11.3 Fraud Ring Detection (The Real Game-Changer)
+### 11.3 Fraud Ring Detection (The Real Game-Changer)
 
 The market crash scenario involves coordinated attacks (500 workers) — not individuals.
 
@@ -452,7 +452,7 @@ Same device fingerprints / IP clusters
 
 This prevents liquidity pool drain attacks at scale.
 
-###11.4 Real-Time Fraud Scoring Engine
+### 11.4 Real-Time Fraud Scoring Engine
 
 Each payout trigger is assigned a Fraud Confidence Score (0–1):
 
@@ -471,7 +471,7 @@ Decision Logic
 
 > 0.75 → Flag for review / delay payout
 
-###11.5 UX Balance — Protecting Honest Workers
+### 11.5 UX Balance — Protecting Honest Workers
 
 ### Key challenge:
 Do NOT punish real workers during bad network/weather conditions
