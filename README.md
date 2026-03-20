@@ -632,3 +632,8 @@ Team Mappas
 Amrita Vishwa Vidyapeetham, Amritapuri
 
 ---
+## 15. PPT Link
+PPT Link : 
+
+ https://www.canva.com/design/DAHEgU0_Pxs/p46GhPaNGyYFB-jNQeBQVg/edit?utm_content=DAHEgU0_Pxs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
