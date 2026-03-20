@@ -361,10 +361,157 @@ gigshield/
     ├── architecture.png
     └── wireframes/
 ```
+## 11. Adversarial Defense & Anti-Spoofing Strategy
 
+### Market Crash Scenario Response (Phase 1 Pivot)
+A coordinated fraud ring using GPS spoofing has exposed a critical flaw in parametric systems — location ≠ truth.
+
+GigShield is designed with a multi-layer adversarial defense architecture that goes beyond GPS to verify real-world work conditions, not just coordinates.
+
+11.1 The Differentiation — Real Worker vs Spoofer
+
+GigShield does not trust GPS alone.
+
+Instead, we validate a worker’s claim using a Triangulated Reality Model:
+
+### 3-Layer Validation
+
+Behavioral Consistency Layer
+
+Is the worker behaving like a real delivery partner?
+
+Signals:
+
+Order acceptance patterns
+
+Movement trajectories (continuous vs static jumps)
+
+App foreground activity (navigation usage)
+
+Environmental Correlation Layer
+
+Does the environment match the claimed disruption?
+
+Signals:
+
+CDI score in zone
+
+Nearby workers' activity patterns
+
+Platform-wide order drop
+
+Network & Device Authenticity Layer
+
+Is the device behaving like a genuine mobile device?
+
+Signals:
+
+IP consistency vs GPS location
+
+Device sensor data (accelerometer, gyroscope)
+
+Rooted/emulator detection
+
+### Key Insight:
+A real worker shows coherent patterns across all 3 layers.
+A spoofer can fake GPS — but cannot fake ecosystem consistency.
+
+11.2 The Data — Beyond GPS Coordinates
+
+GigShield uses a multi-signal fraud graph instead of single-point validation.
+
+### Data Signals Used
+Category	Data Points	Why it Matters
+Movement	Speed, route continuity, stop frequency	Detect teleportation / fake jumps
+Platform Data	Order requests, acceptance rate, cancellations	Real workers receive orders even in disruption
+Peer Comparison	Nearby riders’ activity	Detect isolated anomalies
+Device Signals	Accelerometer, gyroscope	Confirms real-world motion
+Network Data	IP vs GPS mismatch	Flags spoofing apps/VPN
+Historical Behavior	Past patterns vs current anomaly	Detect sudden unnatural changes
+Cluster Detection	Multiple users with identical patterns	Identifies fraud rings
+
+11.3 Fraud Ring Detection (The Real Game-Changer)
+
+The market crash scenario involves coordinated attacks (500 workers) — not individuals.
+
+GigShield detects this using:
+
+### Graph-Based Anomaly Detection
+
+Build a zone-level interaction graph
+
+Identify:
+
+Synchronized claims (same timestamp)
+
+Identical movement patterns
+
+Same device fingerprints / IP clusters
+
+### If >X users show identical anomalies → flagged as syndicate
+
+This prevents liquidity pool drain attacks at scale.
+
+11.4 Real-Time Fraud Scoring Engine
+
+Each payout trigger is assigned a Fraud Confidence Score (0–1):
+
+Fraud Score = f(
+    GPS reliability,
+    movement realism,
+    peer consistency,
+    platform activity,
+    device authenticity
+)
+Decision Logic
+
+< 0.4 → Auto-approve payout
+
+0.4 – 0.75 → Soft verification
+
+> 0.75 → Flag for review / delay payout
+
+11.5 UX Balance — Protecting Honest Workers
+
+### Key challenge:
+Do NOT punish real workers during bad network/weather conditions
+
+GigShield Solution:
+### Soft Friction, Not Hard Rejection
+
+No immediate denial
+
+Instead:
+
+“Verification in progress” state
+
+Delayed payout (not cancelled)
+
+### Passive Verification (No extra effort)
+
+No document uploads
+
+No manual claims
+
+System uses background signals only
+
+### Grace Buffer System
+
+If:
+
+CDI is high AND
+
+network signals are weak
+→ System leans toward approval
+
+### Post-Payout Audit (Not Pre-Blocking)
+
+Small payouts → auto-approved
+
+Suspicious clusters → investigated later
 ---
 
-## 11. Team
+## 12. Team
 
 > *Megha Prashant
 > Aditi S
@@ -374,7 +521,7 @@ gigshield/
 
 ---
 
-## 12. Demo Video (Phase 1)
+## 13. Demo Video (Phase 1)
 
 > *(Add your 2-minute video link here before March 20 EOD)*
 
