@@ -58,10 +58,14 @@ ONBOARDING
 Worker registers via mobile (Aadhaar + e-Shram number + platform ID)
     │
     ▼
-AI Risk Profiler runs: zone risk score + earnings baseline (income fingerprint)
+AI Risk Profiler runs:
+    • Zone risk score
+    • Earnings baseline (income fingerprint)
     │
     ▼
-Weekly policy is issued: premium auto-calculated, deducted per order
+Weekly policy is issued:
+    • Premium auto-calculated
+    • Deducted per order
     │
     ▼
 ─────────────── LIVE MONITORING (always on) ───────────────
@@ -72,25 +76,51 @@ Weekly policy is issued: premium auto-calculated, deducted per order
     ▼
 CDI threshold crossed for worker's zone?
     │
-    ├── YES ──► Predictive engine: is disruption 12–48 hrs out (forecast)?
-    │               │
-    │               ├── YES ──► PRE-PAYOUT triggered via UPI (before disruption)
-    │               └── NO  ──► REAL-TIME PAYOUT triggered immediately
+    ├── NO  ──► Continue monitoring
     │
-    └── NO  ──► Continue monitoring
+    └── YES
+           │
+           ▼
+    FRAUD PRE-CHECK (Real-time validation)
+        • Behavioral consistency (orders, movement)
+        • Environmental validation (CDI + peer signals)
+        • Device & network authenticity
+           │
+           ▼
+    Fraud Confidence Score calculated
+           │
+           ├── High risk (> 0.75)
+           │       └── Flag → Delay payout (soft verification)
+           │
+           ├── Medium risk (0.40 – 0.75)
+           │       └── Partial / delayed payout + monitoring
+           │
+           └── Low risk (< 0.40)
+                   │
+                   ▼
+    Predictive engine: is disruption 12–48 hrs out (forecast)?
+           │
+           ├── YES ──► PRE-PAYOUT via UPI (before disruption)
+           │
+           └── NO  ──► REAL-TIME PAYOUT triggered immediately
     │
     ▼
 TIERED RECOVERY STACK
-    ├── Tier 1 (< 8 hrs): Micro-payout only
-    ├── Tier 2 (1–2 days): Payout + EMI deferral request + platform metric freeze
-    └── Tier 3 (3+ days): Full replacement + 0% micro-loan (30 days)
+    ├── Tier 1 (< 8 hrs):   Micro-payout only
+    ├── Tier 2 (1–2 days):  Payout + EMI deferral + platform metric freeze
+    └── Tier 3 (3+ days):   Full replacement + 0% micro-loan (30 days)
     │
     ▼
-FRAUD DETECTION layer validates every trigger
-    (Triangulated Reality Model: GPS + behavior + environment + device)
+POST-PAYOUT AUDIT (background)
+    • Pattern anomaly detection
+    • Fraud ring / cluster detection
+    • Premium adjustment / account flagging
     │
     ▼
-Worker Dashboard updated: earnings protected, coverage status, payout history
+Worker Dashboard updated:
+    • Earnings protected
+    • Coverage status
+    • Payout history
 ```
 
 ---
