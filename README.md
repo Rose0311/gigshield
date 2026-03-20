@@ -86,7 +86,8 @@ TIERED RECOVERY STACK
     └── Tier 3 (3+ days): Full replacement + 0% micro-loan (30 days)
     │
     ▼
-FRAUD DETECTION layer validates every trigger (GPS + order data + weather cross-check)
+FRAUD DETECTION layer validates every trigger
+    (Triangulated Reality Model: GPS + behavior + environment + device)
     │
     ▼
 Worker Dashboard updated: earnings protected, coverage status, payout history
@@ -230,8 +231,8 @@ Rohan, Koramangala (Bengaluru), July (monsoon peak):
   - CDI score below threshold in worker's zone at claim time
   - Claim pattern anomaly (e.g., suspiciously precise disruption timing, multiple claims from same zone within minutes)
   - Device fingerprint cross-check (same device, multiple worker registrations)
-- **Type:** Isolation Forest for anomaly scoring + rule-based hard blocks
-- **Action:** Anomaly score > 0.75 → flag for review; > 0.90 → auto-reject with reason
+- **Type:** Isolation Forest for anomaly scoring + graph-based ring detection + rule-based hard blocks
+- **Action:** Anomaly score > 0.75 → flag for review; > 0.90 → auto-reject with reason logged
 
 ### Module 5: Predictive Payout Scheduler
 - **Type:** Probabilistic forecast trigger
@@ -286,6 +287,7 @@ Rohan, Koramangala (Bengaluru), July (monsoon peak):
 - [x] Literature review and problem deep-dive
 - [x] Novel feature ideation (5 differentiators defined)
 - [x] Persona scenarios documented
+- [x] Adversarial defense architecture designed
 - [x] Tech stack decided
 - [x] This README + repository setup
 - [ ] Wireframes for core mobile screens (onboarding, dashboard, payout notification)
@@ -300,12 +302,13 @@ Rohan, Koramangala (Bengaluru), July (monsoon peak):
 - [ ] Income fingerprint model (mock training data)
 - [ ] UPI payout simulation (Razorpay test mode)
 - [ ] Claims management screen
+- [ ] Basic fraud scoring engine (Isolation Forest v1)
 
 ### Phase 3 — Scale & Optimise (Weeks 5–6, due April 17)
 - [ ] CDI engine v2: civic disruption NLP trigger (curfew/strike)
 - [ ] Predictive pre-payout engine (48-hour forecast-based)
 - [ ] Tiered recovery stack (Tier 1–3 logic)
-- [ ] Fraud detection system (Isolation Forest + GPS validation)
+- [ ] Fraud detection v2: graph-based ring detection + Triangulated Reality Model
 - [ ] Worker dashboard (earnings protected, weekly coverage card)
 - [ ] Admin/insurer dashboard (loss ratios, CDI heatmap, predictive claims forecast)
 - [ ] Platform metric freeze notification (simulated Swiggy/Zomato API call)
@@ -323,7 +326,7 @@ Rohan, Koramangala (Bengaluru), July (monsoon peak):
 | Premium collection | Monthly/annual lump sum | Per-order micro-deduction (invisible) |
 | Coverage scope | Climate only | Climate + civic disruptions |
 | Recovery support | Payout only | Tiered: payout + EMI deferral + metric freeze + micro-loan |
-| Fraud detection | Basic duplicate check | GPS + order data + CDI cross-validation |
+| Fraud detection | Basic duplicate check | Triangulated Reality Model + graph-based ring detection |
 
 ---
 
@@ -346,13 +349,13 @@ gigshield/
 │   │   │   ├── cdi-engine/    ← Composite Disruption Index
 │   │   │   ├── payout/        ← Payout scheduler + pre-payout logic
 │   │   │   ├── premium/       ← Weekly premium calculator
-│   │   │   └── fraud/         ← Anomaly detection
+│   │   │   └── fraud/         ← Anomaly detection + ring detection
 │   │   └── models/
 │   └── package.json
 ├── ml/                        ← Python ML microservice
 │   ├── income_fingerprint/    ← Earnings prediction model
 │   ├── premium_engine/        ← Dynamic pricing model
-│   ├── fraud_detection/       ← Isolation Forest
+│   ├── fraud_detection/       ← Isolation Forest + graph model
 │   └── requirements.txt
 ├── mocks/                     ← Simulated platform APIs
 │   ├── swiggy-mock-server/
@@ -361,167 +364,240 @@ gigshield/
     ├── architecture.png
     └── wireframes/
 ```
+
+---
+
 ## 11. Adversarial Defense & Anti-Spoofing Strategy
 
-### Market Crash Scenario Response (Phase 1 Pivot)
-A coordinated fraud ring using GPS spoofing has exposed a critical flaw in parametric systems — location ≠ truth.
+### The Core Problem: GPS Spoofing in Parametric Systems
 
-GigShield is designed with a multi-layer adversarial defense architecture that goes beyond GPS to verify real-world work conditions, not just coordinates.
+Parametric insurance has an inherent vulnerability: if the trigger is purely signal-based (e.g., "GPS says I'm in Zone X"), a bad actor can fake the signal. GigShield is built with the assumption that GPS will be spoofed — and is designed to catch it.
 
-### 11.1 The Differentiation — Real Worker vs Spoofer
+A coordinated fraud ring (e.g., 500 workers all spoofing the same disruption zone simultaneously) is the most dangerous attack vector. It can drain the liquidity pool faster than any individual claim. This section documents GigShield's full adversarial defense architecture.
 
-GigShield does not trust GPS alone.
+---
 
-Instead, we validate a worker’s claim using a Triangulated Reality Model:
+### 11.1 The Differentiation — Real Worker vs. Spoofer
 
-### 3-Layer Validation
+**GigShield does not trust GPS alone.**
 
-Behavioral Consistency Layer
+Instead, every payout trigger is validated through a **Triangulated Reality Model** — three independent verification layers that a genuine worker satisfies naturally, but a spoofer cannot fake simultaneously.
 
-Is the worker behaving like a real delivery partner?
+#### Layer 1 — Behavioral Consistency
+*Is this worker behaving like a real delivery partner?*
 
-Signals:
+| Signal | What we check |
+|---|---|
+| Order acceptance patterns | Are they receiving and responding to orders normally? |
+| Movement trajectories | Continuous GPS path vs. sudden coordinate jumps (teleportation) |
+| App foreground activity | Is the navigation app in use? Is the delivery app active? |
 
-Order acceptance patterns
+#### Layer 2 — Environmental Correlation
+*Does the external environment actually match the claimed disruption?*
 
-Movement trajectories (continuous vs static jumps)
+| Signal | What we check |
+|---|---|
+| CDI score in zone | Is there a verified disruption in the claimed pin-code? |
+| Nearby riders' activity | Are other workers in the same zone also showing disruption behavior? |
+| Platform order volume drop | Has the Swiggy/Zomato order flow in this zone actually dropped? |
 
-App foreground activity (navigation usage)
+#### Layer 3 — Network & Device Authenticity
+*Is this a genuine mobile device, in the place it claims to be?*
 
-Environmental Correlation Layer
+| Signal | What we check |
+|---|---|
+| IP vs. GPS consistency | Does the IP geolocation match the claimed GPS coordinates? |
+| Device sensor data | Are the accelerometer and gyroscope showing real-world physical motion? |
+| Rooted/emulator detection | Is this a real device or a software emulator running spoofing tools? |
 
-Does the environment match the claimed disruption?
+#### Key Insight
 
-Signals:
+> A real worker shows coherent patterns across all three layers naturally — they don't even know they're being validated.
+> A spoofer can fake GPS coordinates. They **cannot** simultaneously fake ecosystem consistency: real nearby worker behavior, real platform order drops, real device motion sensors, and a real IP geolocation — all at once.
 
-CDI score in zone
+---
 
-Nearby workers' activity patterns
+### 11.2 The Multi-Signal Fraud Graph
 
-Platform-wide order drop
+GigShield does not validate each signal in isolation. Instead, all signals are combined into a **Fraud Graph** per payout event, where each data category is a node and inconsistencies between nodes are edges with anomaly weights.
 
-Network & Device Authenticity Layer
+| Category | Data Points | Why It Matters |
+|---|---|---|
+| Movement | Speed, route continuity, stop frequency | Detects teleportation and fake GPS jumps |
+| Platform Data | Order requests, acceptance rate, cancellations | Real workers receive orders even during disruptions |
+| Peer Comparison | Nearby riders' activity patterns | Detects isolated anomalies vs. group disruption behavior |
+| Device Signals | Accelerometer, gyroscope readings | Confirms real-world physical motion |
+| Network Data | IP vs. GPS mismatch, VPN/proxy detection | Flags spoofing apps and location masking |
+| Historical Behavior | Past patterns vs. current anomaly | Detects sudden unnatural changes in a worker's behavior |
+| Cluster Detection | Multiple users with identical patterns | Identifies coordinated fraud rings |
 
-Is the device behaving like a genuine mobile device?
+---
 
-Signals:
+### 11.3 Fraud Ring Detection
 
-IP consistency vs GPS location
+The most dangerous attack is not one bad actor — it is a **coordinated syndicate** (e.g., 500 accounts all submitting claims from the same fake zone at the same time). Individual anomaly detection misses this. GigShield addresses it with graph-based cluster analysis.
 
-Device sensor data (accelerometer, gyroscope)
+**How it works:**
 
-Rooted/emulator detection
+1. Build a zone-level interaction graph at the time of a CDI trigger event
+2. Identify clusters of workers showing:
+   - Synchronized claim timestamps (within the same 60-second window)
+   - Identical or near-identical movement patterns
+   - Shared device fingerprints or overlapping IP ranges
+3. If more than a configurable threshold of workers in a zone share these anomalies → entire cluster is flagged as a **suspected syndicate**
+4. Payouts for the flagged cluster are paused and routed to the human review queue
 
-### Key Insight:
-A real worker shows coherent patterns across all 3 layers.
-A spoofer can fake GPS — but cannot fake ecosystem consistency.
+This prevents a single coordinated attack from draining the liquidity pool before the system can respond.
 
-### 11.2 The Data — Beyond GPS Coordinates
+---
 
-GigShield uses a multi-signal fraud graph instead of single-point validation.
+### 11.4 Real-Time Fraud Confidence Score
 
-### Data Signals Used
-Category	Data Points	Why it Matters
-Movement	Speed, route continuity, stop frequency	Detect teleportation / fake jumps
-Platform Data	Order requests, acceptance rate, cancellations	Real workers receive orders even in disruption
-Peer Comparison	Nearby riders’ activity	Detect isolated anomalies
-Device Signals	Accelerometer, gyroscope	Confirms real-world motion
-Network Data	IP vs GPS mismatch	Flags spoofing apps/VPN
-Historical Behavior	Past patterns vs current anomaly	Detect sudden unnatural changes
-Cluster Detection	Multiple users with identical patterns	Identifies fraud rings
+Every payout trigger is assigned a **Fraud Confidence Score** from 0 to 1:
 
-### 11.3 Fraud Ring Detection (The Real Game-Changer)
-
-The market crash scenario involves coordinated attacks (500 workers) — not individuals.
-
-GigShield detects this using:
-
-### Graph-Based Anomaly Detection
-
-Build a zone-level interaction graph
-
-Identify:
-
-Synchronized claims (same timestamp)
-
-Identical movement patterns
-
-Same device fingerprints / IP clusters
-
-### If >X users show identical anomalies → flagged as syndicate
-
-This prevents liquidity pool drain attacks at scale.
-
-### 11.4 Real-Time Fraud Scoring Engine
-
-Each payout trigger is assigned a Fraud Confidence Score (0–1):
-
+```
 Fraud Score = f(
-    GPS reliability,
-    movement realism,
-    peer consistency,
-    platform activity,
-    device authenticity
+    GPS reliability score,
+    movement realism score,
+    peer consistency score,
+    platform activity alignment,
+    device authenticity score
 )
-Decision Logic
+```
 
-< 0.4 → Auto-approve payout
+**Decision Logic:**
 
-0.4 – 0.75 → Soft verification
+| Score Range | Action |
+|---|---|
+| < 0.40 | ✅ Auto-approve — payout released immediately |
+| 0.40 – 0.75 | 🟡 Soft verification — payout moved to "processing" state, released within 2 hours unless further anomalies |
+| 0.75 – 0.90 | 🟠 Flagged for review — human review queue, payout delayed |
+| > 0.90 | 🔴 Auto-reject — payout blocked, reason logged, worker notified transparently |
 
-> 0.75 → Flag for review / delay payout
+**ML Model:** Isolation Forest for anomaly scoring on the multi-signal feature vector, combined with rule-based hard blocks for the highest-confidence fraud patterns (e.g., confirmed emulator detection).
+
+---
 
 ### 11.5 UX Balance — Protecting Honest Workers
 
-### Key challenge:
-Do NOT punish real workers during bad network/weather conditions
+The critical design constraint: **the fraud system must never punish honest workers who happen to have weak network signals during a genuine disruption** (e.g., a flood zone with poor connectivity).
 
-GigShield Solution:
-### Soft Friction, Not Hard Rejection
+GigShield achieves this through four UX principles:
 
-No immediate denial
+#### Soft Friction, Not Hard Rejection
+There is no immediate denial state visible to the worker. A suspicious claim moves to **"Verification in Progress"** — the payout is pending, not cancelled. Workers are never told their claim was blocked; they are told it is being processed.
 
-Instead:
+#### Passive Verification Only
+The fraud system uses **only background signals** — it never asks the worker to upload documents, submit manual evidence, or take any extra action. The verification is completely invisible to a legitimate worker.
 
-“Verification in progress” state
+#### Grace Buffer System
+If the CDI score in a zone is high (confirmed disruption) AND the device's network signals are weak or inconsistent (expected in a real flood or storm), the system **biases toward approval**, not denial. Poor connectivity during a real disruption is itself a signal of authenticity.
 
-Delayed payout (not cancelled)
-
-### Passive Verification (No extra effort)
-
-No document uploads
-
-No manual claims
-
-System uses background signals only
-
-### Grace Buffer System
-
-If:
-
-CDI is high AND
-
-network signals are weak
-→ System leans toward approval
-
-### Post-Payout Audit (Not Pre-Blocking)
-
-Small payouts → auto-approved
-
-Suspicious clusters → investigated later
----
-
-## 12. Team
-
-> *Megha Prashant
-> Aditi S
-> Aleena Sebastian
-> Gouri K
-> Judith Ann Benny*
+#### Post-Payout Audit (Not Pre-Blocking)
+For small payout amounts (below a configurable threshold), GigShield **auto-approves and audits afterward** rather than holding up payment. The cost of wrongly delaying a legitimate ₹200 payout to a genuine worker exceeds the cost of retrospectively investigating a potentially fraudulent one.
 
 ---
 
-## 13. Demo Video (Phase 1)
+## 12. Handling Large-Scale Disruptions (e.g., Pandemics)
+
+### Local vs. Systemic Disruptions
+
+GigShield distinguishes between two fundamentally different categories of disruption:
+
+| Type | Examples | Insurability |
+|---|---|---|
+| **Local disruption** | Heavy rain, extreme heat, AQI spike, local curfew, zone strike | Fully insurable — affects a subset of workers, CDI triggers cleanly |
+| **Systemic disruption** | Pandemic, nationwide lockdown, prolonged economic collapse | Partially insurable — affects all workers simultaneously, pooling breaks down |
+
+Systemic disruptions are not fully insurable under traditional parametric models because the fundamental assumption of risk pooling — that not all policyholders are affected at the same time — no longer holds. When 100% of workers file claims simultaneously, no premium pool can cover full replacement.
+
+### Crisis Mode
+
+When GigShield detects a systemic disruption (identified by CDI triggering across >70% of active zones simultaneously, or a government-declared national/state emergency), it activates **Crisis Mode**:
+
+- **Partial capped payouts** instead of full income replacement — workers receive a defined floor amount (e.g., 40–60% of expected earnings) to prevent immediate financial distress, not full compensation
+- **Temporary premium pause or reduction** — premium deductions are halted or reduced for the duration of the crisis period so workers retain more of their reduced income
+- **Micro-credit activation** — instant access to 0% interest micro-loans (₹2,000–₹5,000) repayable over 30–60 days, bridging the gap between partial payout and actual need
+- **Government relief integration** — GigShield pushes eligible workers' e-Shram profiles to active central and state government relief portals (PM-SVANidhi, NDRF, state DM schemes) and surfaces the application links directly in the worker's app dashboard
+
+### Design Philosophy
+
+GigShield's goal during systemic collapse is not full income replacement — that is not financially sustainable in a crisis that affects every worker simultaneously. The goal is to **prevent immediate financial distress**: stop the worker from missing the next meal, the next EMI, the next rent payment. Everything else is bridged through micro-credit and government channels.
+
+> Crisis Mode is a safety valve, not a promise. GigShield is transparent about this with workers during onboarding.
+
+---
+
+## 13. Edge Case Awareness
+
+GigShield is designed with the assumption that real-world systems fail in unexpected ways. We identify three primary categories of failure and design explicitly against each.
+
+### Failure Mode 1 — System Errors
+
+*API delays, stale forecasts, incorrect CDI readings, or platform data inconsistencies*
+
+**Risks:**
+- Weather API returns outdated data → CDI misses a real disruption
+- Platform mock API fails → income fingerprint cannot update
+- Redis cache serves stale CDI score → wrong zone classification
+
+**Mitigations:**
+- CDI engine uses **multi-source redundancy** — if IMD API fails, Open-Meteo is the fallback; if both fail, the last valid CDI score is held for up to 30 minutes before the system downgrades to manual review mode
+- All API calls include staleness timestamps; scores older than 30 minutes are flagged as unverified
+- Platform data outages default to using the worker's 90-day historical earnings baseline, not zero
+
+### Failure Mode 2 — User Behavior
+
+*Intentional gaming, selective work patterns, or coordinated misuse*
+
+**Risks:**
+- Workers strategically avoid riding only when CDI is high, maximising payouts without genuine income loss
+- Coordinated fraud rings spoofing zone locations (covered in Section 11)
+- Workers with multiple platform accounts claiming duplicate payouts
+
+**Mitigations:**
+- Income Fingerprint model uses a **rolling 90-day baseline** — workers who habitually stop working during certain weather already have this reflected in their expected earnings model, reducing inflated payout claims
+- Duplicate account detection via device fingerprint + Aadhaar hash cross-check
+- Behavioural drift detection: if a worker's pattern suddenly shifts to correlate suspiciously with high-CDI periods, the fraud scoring engine flags it as a soft anomaly
+
+### Failure Mode 3 — External Uncertainty
+
+*Sudden weather changes, partial disruptions, or degraded network conditions*
+
+**Risks:**
+- IMD forecast predicts heavy rain; rain doesn't materialise → pre-payout was issued incorrectly
+- A disruption affects only half of a pin-code zone → workers on safe streets receive payouts, workers on flooded streets don't
+- Worker is in a real disruption zone but has weak network → fraud model sees device inconsistencies
+
+**Mitigations:**
+- Pre-payout reconciliation: if the actual CDI after an event is significantly below the forecast trigger level, the pre-paid amount is silently offset against the next week's premium — no clawback demand, no notification to the worker
+- Zone granularity roadmap: Phase 1 uses pin-code level; Phase 3 targets 500m hex-grid zones using H3 (Uber's geospatial library) for sub-zone precision
+- Network-degraded grace mode: if device signals are weak AND CDI is high, the system applies the **Grace Buffer** (see Section 11.5) and biases toward approval
+
+### The Governing Principle
+
+> **No single signal should have the power to break the system.**
+
+Every payout decision in GigShield is validated across at minimum three independent data sources. The system is designed to fail gracefully: when signals are absent or inconsistent, it defaults to the outcome that protects the honest worker — not the one that minimises risk for the insurer.
+
+| Validation Layer | Sources |
+|---|---|
+| Environmental | CDI (IMD + CPCB + disaster alerts) |
+| Behavioral | Worker movement, app activity, order patterns |
+| Platform | Swiggy/Zomato order volume in zone |
+| Device & Network | IP, sensors, device fingerprint |
+
+Any payout that cannot be validated across at least two of these four layers is routed to **human review**, never auto-rejected.
+
+---
+
+## 14. Team
+
+> *(Add your team member names, roles, and college here)*
+
+---
+
+## 15. Demo Video (Phase 1)
 
 > *(Add your 2-minute video link here before March 20 EOD)*
 
