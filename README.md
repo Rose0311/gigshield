@@ -622,15 +622,13 @@ Any payout that cannot be validated across at least two of these four layers is 
 ---
 
 ## 14. Team
+Aditi S (AM.SC.U4CSE23104)
+Aleena Sebastian (AM.SC.U4CSE23205)
+Gouri K (AM.SC.U4CSE23030)
+Judith Ann Benny (AM.SC.U4CSE23225)
+Megha Prasanth (AM.SC.U4CSE23334)
 
-> *(Add your team member names, roles, and college here)*
+Team Mappas 
+Amrita Vishwa Vidyapeetham, Amritapuri
 
 ---
-
-## 15. Demo Video (Phase 1)
-
-> *(Add your 2-minute video link here before March 20 EOD)*
-
----
-
-*Built for Guidewire DEVTrails 2026 | Seed → Scale → Soar*
