@@ -639,4 +639,4 @@ PPT Link :
 
 ## 16.Demo Video
 
-[![Watch the demo](https://drive.google.com/file/d/1PiQSpRKDeuT0y_D74d_962Djiu7lwhX_/view?usp=drive_link)
+[![Watch Demo Video](https://via.placeholder.com/800x400.png?text=Watch+Demo)](https://drive.google.com/file/d/1PiQSpRKDeuT0y_D74d_962Djiu7lwhX_/view?usp=drive_link)
